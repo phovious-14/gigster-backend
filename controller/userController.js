@@ -265,7 +265,8 @@ exports.getWinners = async (req, res) => {
         submissionLink: "$submissionDetails.submissionLink",
         twitterLink: "$submissionDetails.twitterLink",
         anythingElse: "$submissionDetails.anythingElse",
-        walletAddress: "$submissionDetails.walletAddress"
+        walletAddress: "$submissionDetails.walletAddress",
+        inputWalletAddress: "$submissionDetails.inputWalletAddress"
       }
     },
     { $sort: { rank: 1 } }
