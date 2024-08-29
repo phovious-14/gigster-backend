@@ -8,9 +8,17 @@ route.post('/create_hunter_profile', controller.createHunterProfile)
 
 route.post('/create_bounty', controller.createBounty)
 
-route.post('/create_bounty_submission', controller.createBountySubmission)
+route.post('/create_bounty_submission/:bountyId/:walletAddress', controller.createBountySubmission)
+
+route.get('/checkBountySubmitted/:bountyId/:walletAddress', controller.checkBountySubmitted)
+
+route.post('/add_reward_distribution/:bountyId', controller.addRewardDistribution)
+
+route.get('/checkRewardDistributed/:bountyId', controller.checkRewardDistributed)
 
 route.post('/add_winners/:bountyId/:walletAddress', controller.addWinners)
+
+route.get('/get_winners/:bountyId', controller.getWinners)
 
 route.get('/get_sponser_profile/:walletAddress', controller.getSponserProfile)
 

@@ -19,14 +19,13 @@ const bountySchema = new mongoose.Schema({
   winners: [
     {
       submissionId: { type: mongoose.Schema.Types.ObjectId },
-      rank: { type: Number },
-      prizeAmount: { type: Number }
+      rank: { type: Number }
     }
   ],
   startAt: { type: Date },
   endAt: { type: Date },
   createdBy: { type: mongoose.Schema.Types.ObjectId },
-  isWinnerAnnounced: { type: Boolean, default: false },
+  isRewardDistributed: { type: Boolean, default: false },
   winnerAnnouncedAt: { type: Date }
 });
 
