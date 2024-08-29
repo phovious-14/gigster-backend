@@ -7,7 +7,6 @@ const bountyProjectSchema = new mongoose.Schema({
   twitterLink: { type: String },
   anythingElse: { type: String },
   walletAddress: { type: String },
-  inputWalletAddress: { type: String },
   winner: {
       rank: { type: Number }
   },

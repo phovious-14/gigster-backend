@@ -125,7 +125,6 @@ exports.createBountySubmission = async (req, res) => {
       submissionLink,
       twitterLink,
       anythingElse,
-      inputWalletAddress,
     } = req.body;
 
     const bountySubmission = new BountySubmission({
@@ -134,7 +133,6 @@ exports.createBountySubmission = async (req, res) => {
       twitterLink,
       anythingElse,
       walletAddress,
-      inputWalletAddress,
       bountyId
     });
 
@@ -265,8 +263,7 @@ exports.getWinners = async (req, res) => {
         submissionLink: "$submissionDetails.submissionLink",
         twitterLink: "$submissionDetails.twitterLink",
         anythingElse: "$submissionDetails.anythingElse",
-        walletAddress: "$submissionDetails.walletAddress",
-        inputWalletAddress: "$submissionDetails.inputWalletAddress"
+        walletAddress: "$submissionDetails.walletAddress"
       }
     },
     { $sort: { rank: 1 } }
