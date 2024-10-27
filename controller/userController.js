@@ -13,7 +13,7 @@ exports.createSponserProfile = async (req, res) => {
       bio,
       twitterUrl,
       industry,
-      walletAddress
+      walletAddress,
     } = req.body;
 
     const sponser = new Sponser({
@@ -28,7 +28,6 @@ exports.createSponserProfile = async (req, res) => {
     await sponser.save();
 
     res.status(200).json({ message: "sponser created successfully" });
-
   } catch (error) {
     console.error("Error adding user:", error);
     res.status(500).json({ error: "Failed to create sponser" });
@@ -47,8 +46,7 @@ exports.createHunterProfile = async (req, res) => {
       linkedin,
       walletAddress,
       workAt,
-      location
-
+      location,
     } = req.body;
 
     const hunter = new Hunter({
@@ -61,12 +59,11 @@ exports.createHunterProfile = async (req, res) => {
       linkedin,
       walletAddress,
       workAt,
-      location
+      location,
     });
     await hunter.save();
 
     res.status(200).json({ message: "hunter created successfully" });
-
   } catch (error) {
     console.error("Error adding user:", error);
     res.status(500).json({ error: "Failed to create hunter" });
@@ -88,7 +85,7 @@ exports.createBounty = async (req, res) => {
       resources,
       startAt,
       endAt,
-      walletAddress
+      walletAddress,
     } = req.body;
 
     const bounty = new Bounty({
@@ -104,12 +101,11 @@ exports.createBounty = async (req, res) => {
       resources,
       startAt,
       endAt,
-      walletAddress
+      walletAddress,
     });
     await bounty.save();
 
     res.status(200).json({ message: "bounty created successfully" });
-
   } catch (error) {
     console.error("Error adding user:", error);
     res.status(500).json({ error: "Failed to create sponser" });
@@ -118,14 +114,8 @@ exports.createBounty = async (req, res) => {
 
 exports.createBountySubmission = async (req, res) => {
   try {
-
-    const { bountyId, walletAddress } = req.params
-    const {
-      title,
-      submissionLink,
-      twitterLink,
-      anythingElse,
-    } = req.body;
+    const { bountyId, walletAddress } = req.params;
+    const { title, submissionLink, twitterLink, anythingElse } = req.body;
 
     const bountySubmission = new BountySubmission({
       title,
@@ -133,13 +123,12 @@ exports.createBountySubmission = async (req, res) => {
       twitterLink,
       anythingElse,
       walletAddress,
-      bountyId
+      bountyId,
     });
 
     await bountySubmission.save();
 
     res.status(200).json({ message: "bounty submitted successfully" });
-
   } catch (error) {
     console.error("Error adding user:", error);
     res.status(500).json({ error: "Failed to submit bounty" });
@@ -148,16 +137,17 @@ exports.createBountySubmission = async (req, res) => {
 
 exports.checkBountySubmitted = async (req, res) => {
   try {
+    const { bountyId, walletAddress } = req.params;
 
-    const { bountyId, walletAddress } = req.params
-
-    const bountySubmission = await BountySubmission.find({ bountyId, walletAddress })
+    const bountySubmission = await BountySubmission.find({
+      bountyId,
+      walletAddress,
+    });
 
     if (bountySubmission.length === 0) {
-      return res.status(200).json({ isSubmitted: false })
+      return res.status(200).json({ isSubmitted: false });
     }
-    return res.status(200).json({ isSubmitted: true })
-
+    return res.status(200).json({ isSubmitted: true });
   } catch (error) {
     console.error("Error adding user:", error);
     res.status(500).json({ error: "Failed to submit bounty" });
@@ -176,67 +166,73 @@ exports.getAllBounties = async (req, res) => {
 
 exports.getBountyById = async (req, res) => {
   const { bountyId } = req.params;
-  const bounty = await Bounty.findOne({ _id: bountyId })
+  const bounty = await Bounty.findOne({ _id: bountyId });
 
   if (bounty == null) {
-    return res.status(200).json({ bounty: [] })
+    return res.status(200).json({ bounty: [] });
   }
-  return res.status(200).json(bounty)
+  return res.status(200).json(bounty);
 };
 
 exports.getSponserProfile = async (req, res) => {
   const { walletAddress } = req.params;
-  const sponser = await Sponser.findOne({ walletAddress })
+  const sponser = await Sponser.findOne({ walletAddress });
 
   if (sponser == null) {
-    return res.status(200).json({ bounty: [] })
+    return res.status(200).json({ bounty: [] });
   }
-  return res.status(200).json(sponser)
+  return res.status(200).json(sponser);
 };
 
 exports.getSponserBounties = async (req, res) => {
   const { walletAddress } = req.params;
-  const bounties = await Bounty.find({ walletAddress })
+  const bounties = await Bounty.find({ walletAddress }).sort({
+    created_at: -1,
+  });
   console.log(bounties);
 
   if (bounties == null) {
-    return res.status(200).json({ bounty: [] })
+    return res.status(200).json({ bounty: [] });
   }
-  return res.status(200).json(bounties)
+  return res.status(200).json(bounties);
 };
 
 exports.getHunterProfile = async (req, res) => {
   const { walletAddress } = req.params;
-  const hunter = await Hunter.findOne({ walletAddress })
+  const hunter = await Hunter.findOne({ walletAddress });
 
   if (hunter == null) {
-    return res.status(200).json({ hunter: [] })
+    return res.status(200).json({ hunter: [] });
   }
-  return res.status(200).json(hunter)
+  return res.status(200).json(hunter);
 };
 
 exports.addWinners = async (req, res) => {
   const { walletAddress, bountyId } = req.params;
 
-  const { winner1SubmissionId, winner2SubmissionId, winner3SubmissionId } = req.body
+  const { winner1SubmissionId, winner2SubmissionId, winner3SubmissionId } =
+    req.body;
 
-  const winners = await Bounty.findOneAndUpdate({ walletAddress, _id: bountyId }, {
-    $push: {
-      winners: {
-        $each: [
-          { submissionId: winner1SubmissionId, rank: 1 },
-          { submissionId: winner2SubmissionId, rank: 2 },
-          { submissionId: winner3SubmissionId, rank: 3 }
-        ]
-      }
+  const winners = await Bounty.findOneAndUpdate(
+    { walletAddress, _id: bountyId },
+    {
+      $push: {
+        winners: {
+          $each: [
+            { submissionId: winner1SubmissionId, rank: 1 },
+            { submissionId: winner2SubmissionId, rank: 2 },
+            { submissionId: winner3SubmissionId, rank: 3 },
+          ],
+        },
+      },
     },
-  },
-    { new: true })
+    { new: true }
+  );
 
   if (winners == null) {
-    return res.status(200).json({ winners: [] })
+    return res.status(200).json({ winners: [] });
   }
-  return res.status(200).json(winners)
+  return res.status(200).json(winners);
 };
 
 exports.getWinners = async (req, res) => {
@@ -250,8 +246,8 @@ exports.getWinners = async (req, res) => {
         from: "bountysubmissions", // The name of the BountySubmission collection in MongoDB
         localField: "winners.submissionId",
         foreignField: "_id",
-        as: "submissionDetails"
-      }
+        as: "submissionDetails",
+      },
     },
     { $unwind: "$submissionDetails" },
     {
@@ -263,59 +259,58 @@ exports.getWinners = async (req, res) => {
         submissionLink: "$submissionDetails.submissionLink",
         twitterLink: "$submissionDetails.twitterLink",
         anythingElse: "$submissionDetails.anythingElse",
-        walletAddress: "$submissionDetails.walletAddress"
-      }
+        walletAddress: "$submissionDetails.walletAddress",
+      },
     },
-    { $sort: { rank: 1 } }
+    { $sort: { rank: 1 } },
   ]);
 
-  if(!winnerDetails) return res.status(200).json([])
+  if (!winnerDetails) return res.status(200).json([]);
 
-  return res.status(200).json(winnerDetails)
+  return res.status(200).json(winnerDetails);
 };
 
 exports.findUserType = async (req, res) => {
   const { walletAddress } = req.params;
   console.log(walletAddress);
 
-  const hunter = await Hunter.findOne({ walletAddress })
+  const hunter = await Hunter.findOne({ walletAddress });
 
   if (hunter === null) {
+    const sponser = await Sponser.findOne({ walletAddress });
+    if (sponser === null) return res.status(200).json({ userType: "" });
 
-    const sponser = await Sponser.findOne({ walletAddress })
-    if (sponser === null) return res.status(200).json({ userType: '' })
-
-    return res.status(200).json({ userType: 'sponser', user: sponser })
-
+    return res.status(200).json({ userType: "sponser", user: sponser });
   } else {
-
-    return res.status(200).json({ userType: 'hunter', user: hunter })
-
+    return res.status(200).json({ userType: "hunter", user: hunter });
   }
 };
 
 exports.getProjectOfBountyById = async (req, res) => {
   const { bountyId } = req.params;
 
-  const bountySubmission = await BountySubmission.find({ bountyId })
+  const bountySubmission = await BountySubmission.find({ bountyId });
 
-  return res.status(200).json(bountySubmission)
-}
+  return res.status(200).json(bountySubmission);
+};
 
 exports.addRewardDistribution = async (req, res) => {
   const { bountyId } = req.params;
 
-  const bounty = await Bounty.findOneAndUpdate({ _id: bountyId }, {
-    isRewardDistributed: true
-  })
+  const bounty = await Bounty.findOneAndUpdate(
+    { _id: bountyId },
+    {
+      isRewardDistributed: true,
+    }
+  );
 
-  return res.status(200).json(bounty.isRewardDistributed)
-}
+  return res.status(200).json(bounty.isRewardDistributed);
+};
 
 exports.checkRewardDistributed = async (req, res) => {
   const { bountyId } = req.params;
 
-  const bounty = await Bounty.findOne({ _id: bountyId })
+  const bounty = await Bounty.findOne({ _id: bountyId });
 
-  return res.status(200).json(bounty.isRewardDistributed)
-}
+  return res.status(200).json(bounty.isRewardDistributed);
+};
