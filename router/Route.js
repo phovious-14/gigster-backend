@@ -24,6 +24,8 @@ route.get('/get_sponser_profile/:walletAddress', controller.getSponserProfile)
 
 route.get('/get_sponser_bounties/:walletAddress', controller.getSponserBounties)
 
+route.get('/get_sponser_bounties_count/:walletAddress', controller.getSponserBountiesCount)
+
 route.get('/get_hunter_profile/:walletAddress', controller.getHunterProfile)
 
 route.get('/get_bounty_by_id/:bountyId', controller.getBountyById)
@@ -33,5 +35,10 @@ route.get('/get_projectsOf_bounty_by_id/:bountyId', controller.getProjectOfBount
 route.get('/find_usertype/:walletAddress', controller.findUserType)
 
 route.get('/get_all_bounties', controller.getAllBounties) // all bouties for dashboard
+
+route.get('/get_all_bouties_count', controller.getAllBountiesCount) // all bouties for dashboard
+
+route.post(`/add_diwali_wish`, controller.addDiwaliWish)
+
  
 module.exports = route

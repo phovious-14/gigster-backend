@@ -3,6 +3,7 @@ const Sponser = require("../model/sponser.js");
 const Hunter = require("../model/hunter.js");
 const Bounty = require("../model/bounty.js");
 const BountySubmission = require("../model/bountySubmission.js");
+const diwali = require("../model/diwali.js");
 
 exports.createSponserProfile = async (req, res) => {
   try {
@@ -135,6 +136,27 @@ exports.createBountySubmission = async (req, res) => {
   }
 };
 
+exports.addDiwaliWish = async (req, res) => {
+  try {
+    const { receiverAddress, greeting } = req.body;
+    console.log(
+      receiverAddress,
+      greeting,);
+    
+
+    const diwaliWish = new diwali({
+      receiverAddress, greeting
+    });
+
+    await diwaliWish.save();
+
+    res.status(200).json({ message: "wish sent successfully" });
+  } catch (error) {
+    console.error("error", error);
+    res.status(500).json({ error: "Failed" });
+  }
+};
+
 exports.checkBountySubmitted = async (req, res) => {
   try {
     const { bountyId, walletAddress } = req.params;
@@ -158,6 +180,14 @@ exports.getAllBounties = async (req, res) => {
   const bounties = await Bounty.find({}).sort({
     created_at: -1,
   });
+  if (bounties == null) {
+    return res.status(200).json({ bounties: [] });
+  }
+  return res.status(200).json(bounties);
+};
+
+exports.getAllBountiesCount = async (req, res) => {
+  const bounties = await Bounty.find({}).count();
   if (bounties == null) {
     return res.status(200).json({ bounties: [] });
   }
@@ -195,6 +225,17 @@ exports.getSponserBounties = async (req, res) => {
     return res.status(200).json({ bounty: [] });
   }
   return res.status(200).json(bounties);
+};
+
+exports.getSponserBountiesCount = async (req, res) => {
+  const { walletAddress } = req.params;
+  const bountiesCount = await Bounty.find({ walletAddress }).count();
+  console.log(bountiesCount);
+
+  if (bountiesCount == null) {
+    return res.status(200).json({ bounty: [] });
+  }
+  return res.status(200).json(bountiesCount);
 };
 
 exports.getHunterProfile = async (req, res) => {
